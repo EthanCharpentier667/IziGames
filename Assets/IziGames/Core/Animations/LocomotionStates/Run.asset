@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0c3a31d65edc7248b37c9c34d62ddc0, type: 3}
   m_Name: Run
   m_EditorClassIdentifier: 
-  stateName: Walk
+  stateName: Run
   idle: {fileID: 7400000, guid: 134f748d7ce0049f1b4827c6a710697e, type: 2}
   foward: {fileID: 5987713911036300057, guid: 081930da5e255e348940373200bbeaca, type: 3}
   foward_left: {fileID: -4202689071170738779, guid: eee239821c2dee4429fa8125a1fd6023, type: 3}

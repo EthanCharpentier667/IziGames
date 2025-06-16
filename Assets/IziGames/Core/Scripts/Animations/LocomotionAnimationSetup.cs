@@ -21,7 +21,7 @@ public static class LocomotionAnimationSetup
         AnimatorOverrideController overrideController = GetOrCreateOverrideController(character.animator);
         ApplyAnimationOverrides(overrideController, newLocomotion);
         EnsureAnimatorParameters(character.animator);
-        character.animator.applyRootMotion = newLocomotion.useRootMotion;
+        character.animator.applyRootMotion =newLocomotion.useRootMotion;
         character.animator.runtimeAnimatorController = overrideController;
     }
     
