@@ -1,188 +1,118 @@
 using UnityEngine;
-using UnityEditor;
 using UnityEditor.Animations;
 
-#if UNITY_EDITOR
 public static class LocomotionAnimationSetup
 {
-    
-    // Dans Character.cs ou un autre script
-
-    public static void PlayAnimation(Animator animator, LocomotionState locomotionState, float transitionTime, string stateName)
-    {
-        if (animator == null) return;
-        float fadeTime = locomotionState != null ? locomotionState.transitionDuration : transitionTime;
-        animator.CrossFade(stateName, fadeTime);
-    }
-    /// <summary>
-    /// Applique les animations d'un LocomotionState à un AnimatorController existant
-    /// </summary>
-    public static void ApplyLocomotionState(AnimatorController targetController, LocomotionState locomotionState)
-    {
-        if (targetController == null || locomotionState == null)
-        {
-            Debug.LogError("Missing references for animation setup");
-            return;
-        }
-
-        bool anyChanges = false;
-
-        foreach (var layer in targetController.layers)
-        {
-            foreach (var state in layer.stateMachine.states)
-            {
-                if (state.state.motion is BlendTree mainBlendTree)
-                {
-                    if (UpdateBlendTreeRecursively(mainBlendTree, locomotionState))
-                    {
-                        anyChanges = true;
-                    }
-                }
-            }
-        }
-
-        if (anyChanges)
-        {
-            EditorUtility.SetDirty(targetController);
-            AssetDatabase.SaveAssets();
-            Debug.Log("Locomotion state applied to animator controller");
-        }
-    }
-    
-    /// <summary>
-    /// Applique les animations d'un LocomotionState à un Animator et son AnimatorController
-    /// </summary>
-    public static void ApplyLocomotionState(Animator targetAnimator, LocomotionState locomotionState)
-    {
-        if (targetAnimator == null)
-        {
-            Debug.LogError("Target animator is null");
-            return;
-        }
-        
-        AnimatorController controller = targetAnimator.runtimeAnimatorController as AnimatorController;
-        if (controller == null)
-        {
-            Debug.LogError("Target animator doesn't have an AnimatorController");
-            return;
-        }
-        
-        ApplyLocomotionState(controller, locomotionState);
-    }
-    
-    /// <summary>
-    /// Applique un LocomotionState à un Character
-    /// </summary>
     public static void ApplyLocomotionStateToCharacter(Character character)
     {
-        if (character == null)
-        {
-            Debug.LogError("Character is null");
+        if (character == null || character.baseState == null || character.animator == null)
             return;
-        }
-        
-        if (character.animator == null)
-        {
-            Debug.LogError("Character doesn't have an animator reference");
-            return;
-        }
-        
-        if (character.animationState == null)
-        {
-            Debug.LogError("Character doesn't have a locomotion state reference");
-            return;
-        }
-        
-        ApplyLocomotionState(character.animator, character.animationState);
+        AnimatorOverrideController overrideController = GetOrCreateOverrideController(character.animator);
+        ApplyAnimationOverrides(overrideController, character.baseState);
+        EnsureAnimatorParameters(character.animator);
+        character.animator.applyRootMotion = character.baseState.useRootMotion;
+        character.animator.runtimeAnimatorController = overrideController;
     }
-
-    private static bool UpdateBlendTreeRecursively(BlendTree tree, LocomotionState state)
+    
+    public static void ApplyOtherLocomotionStateToCharacter(Character character, LocomotionState newLocomotion)
     {
-        bool anyChanges = false;
-        var children = tree.children;
-        
-        for (int i = 0; i < children.Length; i++)
+        if (character == null || character.baseState == null || character.animator == null)
+            return;
+        AnimatorOverrideController overrideController = GetOrCreateOverrideController(character.animator);
+        ApplyAnimationOverrides(overrideController, newLocomotion);
+        EnsureAnimatorParameters(character.animator);
+        character.animator.applyRootMotion = newLocomotion.useRootMotion;
+        character.animator.runtimeAnimatorController = overrideController;
+    }
+    
+    private static AnimatorOverrideController GetOrCreateOverrideController(Animator animator)
+    {
+        var overrideController = animator.runtimeAnimatorController as AnimatorOverrideController;
+
+        if (overrideController == null)
         {
-            var child = children[i];
-            
-            if (child.motion is BlendTree childTree)
+            var baseController = Resources.Load<RuntimeAnimatorController>("BasicLocomotion");
+            if (baseController == null)
             {
-                if (UpdateBlendTreeRecursively(childTree, state))
-                {
-                    anyChanges = true;
-                }
-                continue;
+                Debug.LogError("Le controller de base 'BasicLocomotion' est manquant dans le dossier Resources");
+                return null;
             }
 
-            string motionName = child.motion?.name?.ToLower() ?? "";
+            overrideController = new AnimatorOverrideController(baseController);
+        }
+
+        return overrideController;
+    }
+    
+    private static void ApplyAnimationOverrides(AnimatorOverrideController controller, LocomotionState locomotion)
+    {
+        if (controller == null || locomotion == null) return;
+
+        var overridesList = new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<AnimationClip, AnimationClip>>();
+        controller.GetOverrides(overridesList);
+        var overridesDict = new AnimationClipOverrides(overridesList.Count);
+        foreach (var kvp in overridesList)
+        {
+            if (kvp.Key != null)
+                overridesDict[kvp.Key.name] = kvp.Value;
+        }
+        ApplyOverride(ref overridesDict, "Human@Stand_Idle", locomotion.idle);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_F", locomotion.foward);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_B", locomotion.backward);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_L", locomotion.left);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_R", locomotion.right);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_FL", locomotion.foward_left);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_FR", locomotion.foward_right);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_BL", locomotion.backward_left);
+        ApplyOverride(ref overridesDict, "Human@Stand_Fast_BR", locomotion.backward_right);
+        var newOverridesList = new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<AnimationClip, AnimationClip>>();
+        foreach (var kvp in overridesList)
+        {
             AnimationClip newClip = null;
-            
-            if (motionName.Contains("idle"))
-                newClip = state.idle;
-            else if (motionName.Contains("walk_forward_left") || motionName.Contains("walk_f_l"))
-                newClip = state.walk_foward_left;
-            else if (motionName.Contains("walk_forward_right") || motionName.Contains("walk_f_r"))
-                newClip = state.walk_foward_right;
-            else if (motionName.Contains("walk_backward_left") || motionName.Contains("walk_b_l"))
-                newClip = state.walk_backward_left;
-            else if (motionName.Contains("walk_backward_right") || motionName.Contains("walk_b_r"))
-                newClip = state.walk_backward_right;
-            else if (motionName.Contains("walk_f") || motionName.Contains("walk_forward"))
-                newClip = state.walk_foward;
-            else if (motionName.Contains("walk_b") || motionName.Contains("walk_back"))
-                newClip = state.walk_backward;
-            else if (motionName.Contains("walk_l") || motionName.Contains("walk_left"))
-                newClip = state.walk_left;
-            else if (motionName.Contains("walk_r") || motionName.Contains("walk_right"))
-                newClip = state.walk_right;
-            else if (motionName.Contains("run_f") || motionName.Contains("run_forward"))
-                newClip = state.walk_foward;
-            else if (motionName.Contains("run_b") || motionName.Contains("run_back"))
-                newClip = state.walk_backward;
-            else if (motionName.Contains("run_l") || motionName.Contains("run_left"))
-                newClip = state.walk_left;
-            else if (motionName.Contains("run_r") || motionName.Contains("run_right"))
-                newClip = state.walk_right;
-            
-            if (newClip != null && child.motion != newClip)
+            if (kvp.Key != null && overridesDict.TryGetValue(kvp.Key.name, out newClip))
+                newOverridesList.Add(new System.Collections.Generic.KeyValuePair<AnimationClip, AnimationClip>(kvp.Key, newClip));
+            else
+                newOverridesList.Add(kvp);
+        }
+        controller.ApplyOverrides(newOverridesList);
+    }
+    
+    private static void ApplyOverride(ref AnimationClipOverrides overrides, string key, AnimationClip clip)
+    {
+        if (overrides.ContainsKey(key) && clip != null) {
+            overrides[key] = clip;
+        } else {
+            Debug.LogWarning($"L'animation '{key}' est manquante dans l'état de locomotion.");
+        }
+    }
+    
+    private static void EnsureAnimatorParameters(Animator animator)
+    {
+        string[] requiredParameters = {
+            "Speed", "Speed-X", "Speed-Z", "Speed-Y", "Grounded", "Stand"
+        };
+        
+        foreach (string param in requiredParameters)
+        {
+            if (!HasParameter(animator, param))
             {
-                child.motion = newClip;
-                children[i] = child;
-                anyChanges = true;
+                Debug.LogWarning($"L'Animator du personnage n'a pas le paramètre requis '{param}'");
             }
         }
-        
-        if (anyChanges)
+    }
+    
+    private static bool HasParameter(Animator animator, string paramName)
+    {
+        foreach (AnimatorControllerParameter param in animator.parameters)
         {
-            tree.children = children;
+            if (param.name == paramName) return true;
         }
-        
-        return anyChanges;
+        return false;
     }
 }
 
-[CustomEditor(typeof(Character))]
-public class CharacterEditor : Editor
+public class AnimationClipOverrides : System.Collections.Generic.Dictionary<string, AnimationClip>
 {
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-        
-        Character character = (Character)target;
-        
-        EditorGUILayout.Space();
-        
-        if (GUILayout.Button("Apply Animation State"))
-        {
-            if (character.animator != null && character.animationState != null)
-            {
-                LocomotionAnimationSetup.ApplyLocomotionStateToCharacter(character);
-            }
-            else
-            {
-                Debug.LogError("Missing animator or locomotion state reference");
-            }
-        }
-    }
+    public AnimationClipOverrides() : base() { }
+    public AnimationClipOverrides(int capacity) : base(capacity) { }
 }
-#endif

@@ -406,7 +406,7 @@ BlendTree:
   m_Name: Run
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 134f748d7ce0049f1b4827c6a710697e, type: 2}
+    m_Motion: {fileID: 7400000, guid: 6f94e8c6ef6ee40f9be361362e87905b, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -703,7 +703,7 @@ BlendTree:
   m_Name: Land Locomotion
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 134f748d7ce0049f1b4827c6a710697e, type: 2}
+    m_Motion: {fileID: 7400000, guid: 6f94e8c6ef6ee40f9be361362e87905b, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1

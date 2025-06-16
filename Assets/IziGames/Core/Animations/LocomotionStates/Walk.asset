@@ -14,15 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateName: Walk
   idle: {fileID: 7400000, guid: 134f748d7ce0049f1b4827c6a710697e, type: 2}
-  walk_foward: {fileID: 7400000, guid: 64a57d2813a064eb1a17326d6221f375, type: 2}
-  walk_foward_left: {fileID: 7400000, guid: 573bbb6c97468471d9594792687798d5, type: 2}
-  walk_foward_right: {fileID: 7400000, guid: 98705d91e146f47d19d2ef71683d062b, type: 2}
-  walk_backward: {fileID: 7400000, guid: 06f2c571e9fbf43b4974ea93406efb59, type: 2}
-  walk_backward_left: {fileID: 7400000, guid: 69c5176cb9cb24abeb9b61a870367f00, type: 2}
-  walk_backward_right: {fileID: 7400000, guid: 080d17e4e81e947dcbfd896e215e417c, type: 2}
-  walk_left: {fileID: 7400000, guid: ee85eed140d9b4cda84b387e6742cf70, type: 2}
-  walk_right: {fileID: 7400000, guid: e5fd586ee94b64891a97351be7e6407e, type: 2}
+  foward: {fileID: 7400000, guid: 64a57d2813a064eb1a17326d6221f375, type: 2}
+  foward_left: {fileID: 7400000, guid: 573bbb6c97468471d9594792687798d5, type: 2}
+  foward_right: {fileID: 7400000, guid: 98705d91e146f47d19d2ef71683d062b, type: 2}
+  backward: {fileID: 7400000, guid: 06f2c571e9fbf43b4974ea93406efb59, type: 2}
+  backward_left: {fileID: 7400000, guid: 69c5176cb9cb24abeb9b61a870367f00, type: 2}
+  backward_right: {fileID: 7400000, guid: 080d17e4e81e947dcbfd896e215e417c, type: 2}
+  left: {fileID: 7400000, guid: ee85eed140d9b4cda84b387e6742cf70, type: 2}
+  right: {fileID: 7400000, guid: e5fd586ee94b64891a97351be7e6407e, type: 2}
+  transitionDuration: 0.2
+  transitionOffset: 0
+  transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  blendingSpeed: 2.5
+  applyRootMotion: 1
   transitionTime: 0.2
   loop: 1
+  useRootMotion: 1
   transitionArrive: {fileID: 0}
   transitionDepart: {fileID: 0}

@@ -8,14 +8,14 @@ public class LocomotionState : ScriptableObject
 
     [Header("Animations")]
     public AnimationClip idle;
-    public AnimationClip walk_foward;
-    public AnimationClip walk_foward_left;
-    public AnimationClip walk_foward_right;
-    public AnimationClip walk_backward;
-    public AnimationClip walk_backward_left;
-    public AnimationClip walk_backward_right;
-    public AnimationClip walk_left;
-    public AnimationClip walk_right;
+    public AnimationClip foward;
+    public AnimationClip foward_left;
+    public AnimationClip foward_right;
+    public AnimationClip backward;
+    public AnimationClip backward_left;
+    public AnimationClip backward_right;
+    public AnimationClip left;
+    public AnimationClip right;
 
     [Header("Transition Settings")]
     [Range(0, 1)]
@@ -29,6 +29,7 @@ public class LocomotionState : ScriptableObject
     [Header("Settings")]
     public float transitionTime = 0.2f;
     public bool loop = true;
+    public bool useRootMotion = true;
 
     [Header("Transitions")]
     public AnimationClip transitionArrive;

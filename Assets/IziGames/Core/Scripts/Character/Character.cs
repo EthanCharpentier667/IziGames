@@ -28,7 +28,8 @@ public class Character : MonoBehaviour
     public float gravity = 9.81f;
 
     [Header("Animations")]
-    public LocomotionState animationState;
+    public LocomotionState baseState;
+    public LocomotionState runState;
     public Animator animator;
     public GameObject mannequin;
 
@@ -97,46 +98,58 @@ public class Character : MonoBehaviour
         UpdateAnimator();
     }
 
-    void UpdateAnimator()
+     void UpdateAnimator()
     {
         if (animator == null) return;
+        
         Vector2 input = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
         float targetSpeedX = input.x;
         float targetSpeedZ = input.y;
         float currentSpeedX = animator.GetFloat("Speed-X");
         float currentSpeedZ = animator.GetFloat("Speed-Z");
-        float dampTime = animationState != null ? 1.0f / animationState.blendingSpeed : 0.1f;
-        animator.SetFloat("Speed-X", Mathf.Lerp(currentSpeedX, targetSpeedX, Time.deltaTime * 10f));
-        animator.SetFloat("Speed-Z", Mathf.Lerp(currentSpeedZ, targetSpeedZ, Time.deltaTime * 10f));
+        float dampTime = baseState != null ? 1.0f / baseState.blendingSpeed : 0.1f;
+        animator.SetFloat("Speed-X", Mathf.Lerp(currentSpeedX, targetSpeedX, Time.deltaTime / dampTime));
+        animator.SetFloat("Speed-Z", Mathf.Lerp(currentSpeedZ, targetSpeedZ, Time.deltaTime / dampTime));
         float speedMagnitude = input.magnitude;
         float currentSpeed = animator.GetFloat("Speed");
-        float targetSpeed = speedMagnitude * (speed / walkSpeed);
-        animator.SetFloat("Speed", Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * 10f));
-        animator.SetFloat("Grounded", controller.isGrounded ? 1f : 0f);
-        animator.SetFloat("Stand", Height >= 1.9f ? 1f : 0.5f);
+        float targetSpeed = speedMagnitude;
+        if (speed == sprintSpeed) {
+            targetSpeed *= 2.0f;
+        } else if (speed == crouchSpeed) {
+            targetSpeed *= 0.5f;
+        }
+        animator.SetFloat("Speed", Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime / dampTime));
+        float groundedValue = controller.isGrounded ? 1.0f : 0.0f;
+        animator.SetFloat("Grounded", Mathf.Lerp(animator.GetFloat("Grounded"), groundedValue, Time.deltaTime * 8f));
+        animator.SetFloat("Stand", Height >= 1.9f ? 1.0f : 0.5f);
         animator.SetFloat("Speed-Y", verticalVelocity);
-}
+        if (baseState != null && baseState.useRootMotion) {
+            animator.applyRootMotion = true;
+        }
+    }
 
     void Crouch(bool isCrouching)
     {
-        if (isCrouching) {
+        if (isCrouching && controller.isGrounded) {
             speed = crouchSpeed;
             Height = 1f;
             Radius = 0.5f;
-            centerOffset = 0.5f;
+            //centerOffset = 0.5f;
         } else {
             speed = walkSpeed;
             Height = 2f;
             Radius = 0.5f;
-            centerOffset = 0.0f;
+            //centerOffset = 0.0f;
         }
     }
 
     void Sprint(bool isSprinting)
     {
-        if (isSprinting) {
+        if (isSprinting && controller.isGrounded) {
+            LocomotionAnimationSetup.ApplyOtherLocomotionStateToCharacter(this, runState);
             speed = sprintSpeed;
         } else {
+            LocomotionAnimationSetup.ApplyOtherLocomotionStateToCharacter(this, baseState);
             speed = walkSpeed;
         }
     }

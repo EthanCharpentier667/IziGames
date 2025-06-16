@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c3a31d65edc7248b37c9c34d62ddc0, type: 3}
+  m_Name: Crouch
+  m_EditorClassIdentifier: 
+  stateName: Walk
+  idle: {fileID: 7400000, guid: 6f94e8c6ef6ee40f9be361362e87905b, type: 2}
+  walk_foward: {fileID: 7400000, guid: 053a119dbf26f48f1bd6e0cd60a954a7, type: 2}
+  walk_foward_left: {fileID: 7400000, guid: ba30eaeb3516e43bcb9e1622d287943a, type: 2}
+  walk_foward_right: {fileID: 7400000, guid: 444c01b946a6f491ebb81f22be5153c2, type: 2}
+  walk_backward: {fileID: 7400000, guid: dcea96112c7c54cee996ff3d9bcb6cc0, type: 2}
+  walk_backward_left: {fileID: 7400000, guid: 28e2816bc58b646009bfae44759deff0, type: 2}
+  walk_backward_right: {fileID: 7400000, guid: c80949187d7794597b18fb26ea41c1f1, type: 2}
+  walk_left: {fileID: 7400000, guid: 68234e8093eee4666afd40f041270b05, type: 2}
+  walk_right: {fileID: 7400000, guid: 1200845d896c149bc898da3462d84a4e, type: 2}
+  transitionDuration: 0.2
+  transitionOffset: 0
+  transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  blendingSpeed: 2.5
+  applyRootMotion: 0
+  transitionTime: 0.2
+  loop: 1
+  transitionArrive: {fileID: 0}
+  transitionDepart: {fileID: 0}

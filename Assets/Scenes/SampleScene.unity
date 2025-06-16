@@ -496,7 +496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlayer: 1
   speed: 5
-  sprintSpeed: 10
+  sprintSpeed: 7
   walkSpeed: 3
   crouchSpeed: 1.5
   jumpHeight: 1
@@ -506,7 +506,8 @@ MonoBehaviour:
   centerOffset: 0
   Weight: 80
   gravity: 9.81
-  animationState: {fileID: 11400000, guid: 1896c5bc78a216e43a982f9b9035c089, type: 2}
+  baseState: {fileID: 11400000, guid: 1896c5bc78a216e43a982f9b9035c089, type: 2}
+  runState: {fileID: 11400000, guid: 29d641cbfc8dbca408329b9a0ae4e3a7, type: 2}
   animator: {fileID: 1195357130}
   mannequin: {fileID: 919132148067372694}
 --- !u!95 &1195357130
@@ -575,7 +576,8 @@ MonoBehaviour:
   centerOffset: 0
   Weight: 80
   gravity: 9.81
-  animationState: {fileID: 11400000, guid: 1896c5bc78a216e43a982f9b9035c089, type: 2}
+  baseState: {fileID: 0}
+  runState: {fileID: 0}
   animator: {fileID: 1801243278}
   mannequin: {fileID: 1801243273}
 --- !u!23 &1801243275
