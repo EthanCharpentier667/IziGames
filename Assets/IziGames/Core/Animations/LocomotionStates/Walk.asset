@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c3a31d65edc7248b37c9c34d62ddc0, type: 3}
+  m_Name: Walk
+  m_EditorClassIdentifier: 
+  stateName: Walk
+  idle: {fileID: 7400000, guid: 134f748d7ce0049f1b4827c6a710697e, type: 2}
+  walk_foward: {fileID: 7400000, guid: 64a57d2813a064eb1a17326d6221f375, type: 2}
+  walk_foward_left: {fileID: 7400000, guid: 573bbb6c97468471d9594792687798d5, type: 2}
+  walk_foward_right: {fileID: 7400000, guid: 98705d91e146f47d19d2ef71683d062b, type: 2}
+  walk_backward: {fileID: 7400000, guid: 06f2c571e9fbf43b4974ea93406efb59, type: 2}
+  walk_backward_left: {fileID: 7400000, guid: 69c5176cb9cb24abeb9b61a870367f00, type: 2}
+  walk_backward_right: {fileID: 7400000, guid: 080d17e4e81e947dcbfd896e215e417c, type: 2}
+  walk_left: {fileID: 7400000, guid: ee85eed140d9b4cda84b387e6742cf70, type: 2}
+  walk_right: {fileID: 7400000, guid: e5fd586ee94b64891a97351be7e6407e, type: 2}
+  transitionTime: 0.2
+  loop: 1
+  transitionArrive: {fileID: 0}
+  transitionDepart: {fileID: 0}
